@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ChefHat, Star, MapPin, Phone, Mail, Instagram, Facebook, ShoppingCart, Clock, Award } from 'lucide-react';
+import ContactForm from './components/ContactForm';
 
 function App() {
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
@@ -12,7 +13,7 @@ function App() {
     },
     {
       name: "Aswanth Karthik",
-      text: "If you’re in Kotagiri, this bakery is a must-visit for fresh and delicious treats. Their brownies are hands down the best in the Nilgiris—rich, fudgy, and irresistible! The varkeys here are equally impressive, incredibly fresh, flaky, and full of traditional flavor. The quality and taste stand out, making it a perfect spot to satisfy your cravings. Don’t miss it!.",
+      text: "If you're in Kotagiri, this bakery is a must-visit for fresh and delicious treats. Their brownies are hands down the best in the Nilgiris—rich, fudgy, and irresistible! The varkeys here are equally impressive, incredibly fresh, flaky, and full of traditional flavor. The quality and taste stand out, making it a perfect spot to satisfy your cravings. Don't miss it!.",
       rating: 5
     },
     {
@@ -65,6 +66,22 @@ function App() {
     }, 4000);
     return () => clearInterval(interval);
   }, []);
+
+  const handleContactSubmit = async (formData: { name: string; email: string; message: string }) => {
+    // For now, we'll use a simple mailto approach
+    // In production, you'd want to use a service like EmailJS, Formspree, or your own backend
+    const subject = `Contact Form Submission from ${formData.name}`;
+    const body = `Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`;
+    
+    // Create mailto link
+    const mailtoLink = `mailto:hillbrowniie@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    
+    // Open default email client
+    window.location.href = mailtoLink;
+    
+    // Simulate async operation
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  };
 
   return (
     <div className="min-h-screen bg-[#0D0907] text-[#F5F1E8]">
@@ -310,64 +327,95 @@ function App() {
   </div>
 </section>
 
-      {/* Contact Footer */}
-      <footer id="contact" className="bg-[#1A0F0A] py-16 border-t border-[#8B4513]/20">
+      {/* Contact Section */}
+      <section id="contact" className="py-20 bg-[#1A0F0A]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-3 gap-12">
-            <div>
-              <div className="flex items-center space-x-3 mb-6">
-                <ChefHat className="h-8 w-8 text-[#CD853F]" />
-                <span className="text-2xl font-serif font-bold text-[#F5F1E8]">Hill Brownie</span>
-              </div>
-              <p className="text-[#D2B48C] mb-6 leading-relaxed">
-                Experience the perfect blend of tradition and innovation in every bite. 
-                Visit us today and taste the difference that passion makes.
-              </p>
-              <div className="flex space-x-4">
-                <a href="#" className="bg-gradient-to-r from-[#8B4513] to-[#CD853F] p-3 rounded-full hover:from-[#CD853F] hover:to-[#DEB887] transition-all duration-300 shadow-lg">
-                  <Instagram className="h-5 w-5 text-[#F5F1E8]" />
-                </a>
-                <a href="#" className="bg-gradient-to-r from-[#8B4513] to-[#CD853F] p-3 rounded-full hover:from-[#CD853F] hover:to-[#DEB887] transition-all duration-300 shadow-lg">
-                  <Facebook className="h-5 w-5 text-[#F5F1E8]" />
-                </a>
-              </div>
-            </div>
+          <div className="text-center mb-16">
+            <h2 className="text-5xl font-serif font-bold text-[#F5F1E8] mb-4">Contact Us</h2>
+            <p className="text-xl text-[#D2B48C]">We'd love to hear from you</p>
+          </div>
 
-            <div>
-              <h3 className="text-2xl font-serif font-bold text-[#F5F1E8] mb-6">Contact Info</h3>
-              <div className="space-y-4">
-                <div className="flex items-center space-x-3">
-                  <MapPin className="h-5 w-5 text-[#CD853F]" />
-                  <span className="text-[#D2B48C]"> Mettupalayam Road, Kotagiri, The Nilgiris, Tamil Nadu, India- 643217</span>
+          <div className="grid lg:grid-cols-2 gap-12">
+            {/* Contact Form */}
+            <ContactForm onSubmit={handleContactSubmit} />
+
+            {/* Contact Information & Map */}
+            <div className="space-y-8">
+              <div className="bg-[#0D0907] p-8 rounded-2xl shadow-2xl border border-[#8B4513]/20">
+                <h3 className="text-2xl font-serif font-bold text-[#F5F1E8] mb-6">Visit Our Bakery</h3>
+                <div className="space-y-4 mb-6">
+                  <div className="flex items-start space-x-3">
+                    <MapPin className="h-5 w-5 text-[#CD853F] mt-1 flex-shrink-0" />
+                    <span className="text-[#D2B48C]">Mettupalayam Road, Kotagiri, The Nilgiris, Tamil Nadu, India - 643217</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <Phone className="h-5 w-5 text-[#CD853F]" />
+                    <span className="text-[#D2B48C]">+91 7867020202; +91 7867030303</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <Mail className="h-5 w-5 text-[#CD853F]" />
+                    <span className="text-[#D2B48C]">hillbrowniie@gmail.com</span>
+                  </div>
                 </div>
-                <div className="flex items-center space-x-3">
-                  <Phone className="h-5 w-5 text-[#CD853F]" />
-                  <span className="text-[#D2B48C]">+91 7867020202; +91 7867030303</span>
+                
+                <div className="text-[#D2B48C] mb-6">
+                  <p className="font-semibold text-[#CD853F] mb-2">Opening Hours:</p>
+                  <p>Daily: 9:30 AM - 9:00 PM</p>
+                  <p>Weekend: 9:00 AM - 9:00 PM</p>
                 </div>
-                <div className="flex items-center space-x-3">
-                  <Mail className="h-5 w-5 text-[#CD853F]" />
-                  <span className="text-[#D2B48C]">hillbrowniie@gmail.com</span>
+
+                <div className="flex space-x-4">
+                  <a 
+                    href="https://www.instagram.com/hillbrownie/" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="bg-gradient-to-r from-[#8B4513] to-[#CD853F] p-3 rounded-full hover:from-[#CD853F] hover:to-[#DEB887] transition-all duration-300 shadow-lg"
+                  >
+                    <Instagram className="h-5 w-5 text-[#F5F1E8]" />
+                  </a>
+                  <a 
+                    href="#" 
+                    className="bg-gradient-to-r from-[#8B4513] to-[#CD853F] p-3 rounded-full hover:from-[#CD853F] hover:to-[#DEB887] transition-all duration-300 shadow-lg"
+                  >
+                    <Facebook className="h-5 w-5 text-[#F5F1E8]" />
+                  </a>
                 </div>
               </div>
-            </div>
 
-            <div>
-              <h3 className="text-2xl font-serif font-bold text-[#F5F1E8] mb-6">Visit Us</h3>
-              <div className="bg-[#0D0907] p-4 rounded-xl border border-[#8B4513]/20">
-                <div className="bg-[#8B4513]/20 h-48 rounded-lg flex items-center justify-center">
-                  <MapPin className="h-12 w-12 text-[#CD853F]" />
+              {/* Google Maps Embed */}
+              <div className="bg-[#0D0907] p-4 rounded-2xl shadow-2xl border border-[#8B4513]/20">
+                <div className="aspect-video rounded-xl overflow-hidden">
+                  <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3914.7234567890123!2d76.8654321!3d11.4123456!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sMettupalayam%20Road%2C%20Kotagiri%2C%20Tamil%20Nadu%20643217!5e0!3m2!1sen!2sin!4v1234567890123!5m2!1sen!2sin"
+                    width="100%"
+                    height="100%"
+                    style={{ border: 0 }}
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    title="Hill Brownie Location"
+                  ></iframe>
                 </div>
-                <p className="text-[#D2B48C] mt-4 text-sm">
-                  Open Daily: 9:30 AM - 9:00 PM<br />
-                  Weekend Hours: 9:00 AM - 9:00 PM
-                </p>
               </div>
             </div>
           </div>
+        </div>
+      </section>
 
-          <div className="border-t border-[#8B4513]/20 mt-12 pt-8 text-center">
-            <p className="text-[#D2B48C]">
-               Crafted with ❤️ and chocolate
+      {/* Footer */}
+      <footer className="bg-[#0D0907] py-12 border-t border-[#8B4513]/20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="flex items-center space-x-3 mb-4 md:mb-0">
+              <img 
+                src="https://i.postimg.cc/QtwcSL2R/Logo-Profile.jpg" 
+                alt="Hill Brownie Logo"
+                className="h-8 w-8"
+              />
+              <span className="text-xl font-serif font-bold text-[#F5F1E8]">Hill Brownie</span>
+            </div>
+            <p className="text-[#D2B48C] text-center">
+              Crafted with ❤️ and chocolate
             </p>
           </div>
         </div>
