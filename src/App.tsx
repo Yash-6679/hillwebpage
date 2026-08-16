@@ -75,7 +75,7 @@ function App() {
           name: 'Ooty Varkey',
           description: 'Traditional flaky pastry from the Nilgiris',
           price: 'Rs. 110 per pack',
-          image: 'https://i.postimg.cc/KYnHTNC7/Varkeys.jpg',
+          image: 'https://i.postimg.cc/t4qHCnFk/Varkey-final.png',
         },
         {
           name: 'Cookies',
