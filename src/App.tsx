@@ -1,63 +1,98 @@
-import React, { useState, useEffect } from 'react';
-import { ChefHat, Star, MapPin, Phone, Mail, Instagram, Facebook, ShoppingCart, Clock, Award } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import {
+  ChefHat,
+  Star,
+  MapPin,
+  Phone,
+  Mail,
+  Instagram,
+  Facebook,
+  Clock,
+  Award,
+  Menu,
+  X,
+  ArrowUp,
+  ChevronDown,
+  Volume2,
+  VolumeX,
+} from 'lucide-react';
 import ContactForm from './components/ContactForm';
+import ScrollReveal from './components/ScrollReveal';
+import StatCounter from './components/StatCounter';
+import Gallery from './components/Gallery';
 
 function App() {
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [showBackToTop, setShowBackToTop] = useState(false);
+  const [videoMuted, setVideoMuted] = useState(true);
+  const [videoLoaded, setVideoLoaded] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const testimonials = [
     {
       name: "S K 's'",
       text: "I was searching for an authentic Ooty Varkey spot in Kotagiri other than Coonoor and Ooty as I frequented Kotagiri nowadays. It was such a satisfactory experience in buying Varkey from here as you see and smell the baking Varkey trays behind the Bakery. Almost they make a lot of good Baking items like Biscuits, Brownies, Plum cakes etc, but as of now I tried only Varkey and left the other items for my next visit to Kotagiri..",
-      rating: 5
+      rating: 5,
     },
     {
-      name: "Aswanth Karthik",
+      name: 'Aswanth Karthik',
       text: "If you're in Kotagiri, this bakery is a must-visit for fresh and delicious treats. Their brownies are hands down the best in the Nilgiris—rich, fudgy, and irresistible! The varkeys here are equally impressive, incredibly fresh, flaky, and full of traditional flavor. The quality and taste stand out, making it a perfect spot to satisfy your cravings. Don't miss it!.",
-      rating: 5
+      rating: 5,
     },
     {
-      name: "Dsparkly Bear",
-      text: "One of the best brownies I ever had in the recent years.. Price and quality also way beyond the standard when compared to other bakers.",
-      rating: 5
-    }
+      name: 'Dsparkly Bear',
+      text: 'One of the best brownies I ever had in the recent years.. Price and quality also way beyond the standard when compared to other bakers.',
+      rating: 5,
+    },
   ];
 
- const products = [
+  const products = [
     {
-      category: "Brownies",
+      category: 'Brownies',
       items: [
         {
-          name: "Walnut Brownie",
-          description: "Dark chocolate infused with crunchy walnuts and rich whole butter — a classic bite with a nutty twist.",
-          price: "Rs. 70 per Piece",
-          image: "https://i.postimg.cc/dVcPpLR0/Brownie-Gen.jpg"
+          name: 'Walnut Brownie',
+          description:
+            'Dark chocolate infused with crunchy walnuts and rich whole butter — a classic bite with a nutty twist.',
+          price: 'Rs. 70 per Piece',
+          image: 'https://i.postimg.cc/dVcPpLR0/Brownie-Gen.jpg',
         },
         {
-          name: "Fudge Brownie",
-          description: "Decadent layers of molten chocolate fudge baked to gooey perfection — every bite a melt-in-mouth indulgence.",
-          price: "Rs. 80 per Piece",
-          image: "https://i.postimg.cc/9FYH3cLt/Fudge.png"
-        }
-      ]
+          name: 'Fudge Brownie',
+          description:
+            'Decadent layers of molten chocolate fudge baked to gooey perfection — every bite a melt-in-mouth indulgence.',
+          price: 'Rs. 80 per Piece',
+          image: 'https://i.postimg.cc/9FYH3cLt/Fudge.png',
+        },
+      ],
     },
     {
-      category: "Varkeys & Cookies",
+      category: 'Varkeys & Cookies',
       items: [
         {
-          name: "Ooty Varkey",
-          description: "Traditional flaky pastry from the Nilgiris",
-          price: "Rs. 110 per pack",
-          image: "https://i.postimg.cc/KYnHTNC7/Varkeys.jpg"
+          name: 'Ooty Varkey',
+          description: 'Traditional flaky pastry from the Nilgiris',
+          price: 'Rs. 110 per pack',
+          image: 'https://i.postimg.cc/KYnHTNC7/Varkeys.jpg',
         },
         {
-          name: "Cookies",
-          description: "A trio of tastes — Salty, Sweet, and Nutty — Baked to Delight Every Craving! ",
-          price: "Rs. 65 per Pack",
-          image: "https://i.postimg.cc/XvSV3sw9/Cookies.jpg"
-        }
-      ]
-    }
+          name: 'Cookies',
+          description: 'A trio of tastes — Salty, Sweet, and Nutty — Baked to Delight Every Craving!',
+          price: 'Rs. 65 per Pack',
+          image: 'https://i.postimg.cc/XvSV3sw9/Cookies.jpg',
+        },
+      ],
+    },
+  ];
+
+  const navLinks = [
+    { label: 'Home', href: '#home' },
+    { label: 'Products', href: '#products' },
+    { label: 'About', href: '#about' },
+    { label: 'Gallery', href: '#gallery' },
+    { label: 'Contact', href: '#contact' },
   ];
 
   useEffect(() => {
@@ -65,138 +100,240 @@ function App() {
       setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
     }, 4000);
     return () => clearInterval(interval);
+  }, [testimonials.length]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+      setShowBackToTop(window.scrollY > 600);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const scrollToSection = (href: string) => {
+    setMobileMenuOpen(false);
+    const element = document.querySelector(href);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const toggleVideoMute = () => {
+    if (videoRef.current) {
+      videoRef.current.muted = !videoRef.current.muted;
+      setVideoMuted(videoRef.current.muted);
+      if (!videoRef.current.muted && videoRef.current.paused) {
+        videoRef.current.play().catch(() => {});
+      }
+    }
+  };
+
   const handleContactSubmit = async (formData: { name: string; email: string; message: string }) => {
-    // For now, we'll use a simple mailto approach
-    // In production, you'd want to use a service like EmailJS, Formspree, or your own backend
     const subject = `Contact Form Submission from ${formData.name}`;
     const body = `Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`;
-    
-    // Create mailto link
     const mailtoLink = `mailto:hillbrowniie@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    
-    // Open default email client
     window.location.href = mailtoLink;
-    
-    // Simulate async operation
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
   };
 
   return (
     <div className="min-h-screen bg-[#0D0907] text-[#F5F1E8]">
-     {/* Header */}
-<header className="fixed top-0 w-full bg-[#0D0907]/95 backdrop-blur-sm z-50 border-b border-[#8B4513]/30">
-  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div className="flex justify-between items-center py-4">
-      <div className="flex items-center space-x-3">
-        <img 
-          src="https://i.postimg.cc/QtwcSL2R/Logo-Profile.jpg" 
-          alt="Hill Brownie Logo"
-          className="h-10 w-10" // Adjust size as needed
-        />
-        <span className="text-2xl font-serif font-bold text-[#F5F1E8]">Hill Brownie</span>
-      </div>
-      {/* Rest of your header code remains the same */}
-    </div>
-  </div>
-</header>
-      
-   {/* Hero Section */}
-<section id="home" className="relative h-screen flex items-center justify-center overflow-hidden">
+      {/* Header */}
+      <header
+        className={`fixed top-0 w-full z-50 border-b transition-all duration-300 ${
+          scrolled
+            ? 'bg-[#0D0907]/95 backdrop-blur-md border-[#8B4513]/30 py-2'
+            : 'bg-transparent border-transparent py-4'
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center space-x-3 cursor-pointer" onClick={() => scrollToSection('#home')}>
+              <img src="/HB_Logo.png" alt="Hill Brownie Logo" className="h-10 w-10 rounded-full object-cover" />
+              <span className="text-2xl font-serif font-bold text-[#F5F1E8]">Hill Brownie</span>
+            </div>
 
-  {/* Background Image */}
-  <div 
-    className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-60"
-    style={{
-      backgroundImage: 'https://images.pexels.com/photos/4110256/pexels-photo-4110256.jpeg?auto=compress&cs=tinysrgb&w=600'
-    }}
-  ></div>
+            {/* Desktop Nav */}
+            <nav className="hidden md:flex items-center space-x-8">
+              {navLinks.map((link) => (
+                <button
+                  key={link.href}
+                  onClick={() => scrollToSection(link.href)}
+                  className="text-[#D2B48C] hover:text-[#CD853F] transition-colors duration-300 font-medium relative group"
+                >
+                  {link.label}
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#CD853F] group-hover:w-full transition-all duration-300" />
+                </button>
+              ))}
+              <button
+                onClick={() => scrollToSection('#contact')}
+                className="bg-gradient-to-r from-[#8B4513] to-[#A0522D] text-[#F5F1E8] px-6 py-2 rounded-full hover:from-[#CD853F] hover:to-[#DEB887] transition-all duration-300 font-semibold shadow-lg text-sm"
+              >
+                Order Now
+              </button>
+            </nav>
 
- <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden">
-
-  {/* Background Gradient Overlay */}
-  <div className="absolute inset-0 bg-gradient-to-br from-[#0D0907]/90 via-[#1A0F0A]/80 to-[#0D0907]/95 z-10"></div>
-
-  {/* Background Image */}
-  <div 
-    className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-60"
-    style={{
-      backgroundImage: "https://i.postimg.cc/QtwcSL2R/Logo-Profile.jpg"
-    }}
-  ></div>
-
-  {/* Hero Content */}
-  <div className="relative z-20 text-center max-w-4xl mx-auto px-4">
-    <div className="mb-8">
-      <ChefHat className="h-16 w-16 text-[#CD853F] mx-auto mb-4 drop-shadow-2xl" />
-      <h1 className="text-6xl md:text-8xl font-serif font-bold text-[#F5F1E8] mb-4 leading-tight drop-shadow-2xl">
-        Hill Brownie
-      </h1>
-      <p className="text-2xl md:text-3xl text-[#D2B48C] font-light italic mb-8 drop-shadow-lg">
-        Tradition Meets Temptation
-      </p>
-    </div>
-
-    <button className="bg-gradient-to-r from-[#8B4513] to-[#A0522D] text-[#F5F1E8] px-12 py-4 text-xl font-semibold rounded-full hover:from-[#CD853F] hover:to-[#DEB887] transform hover:scale-105 transition-all duration-300 shadow-2xl">
-      Order Now
-    </button>
-
-    {/* Animated Pulse Circle */}
-    <div className="w-20 h-20 bg-[#A0522D]/25 rounded-full animate-pulse mx-auto mt-10"></div>
-  </div>
-
-</section>
-
-        {/* Floating elements */}
-        <div className="absolute bottom-10 left-10 opacity-20">
-          <div className="w-16 h-16 bg-[#8B4513]/30 rounded-full animate-pulse"></div>
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden text-[#F5F1E8] p-2"
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
+          </div>
         </div>
-        <div className="absolute top-20 right-20 opacity-15">
-          <div className="w-12 h-12 bg-[#CD853F]/40 rounded-full animate-bounce"></div>
+
+        {/* Mobile Menu */}
+        <div
+          className={`md:hidden overflow-hidden transition-all duration-300 ${
+            mobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+          }`}
+        >
+          <nav className="bg-[#0D0907]/98 backdrop-blur-md border-t border-[#8B4513]/20 px-4 py-4 flex flex-col space-y-3">
+            {navLinks.map((link) => (
+              <button
+                key={link.href}
+                onClick={() => scrollToSection(link.href)}
+                className="text-left text-[#D2B48C] hover:text-[#CD853F] transition-colors duration-300 font-medium py-2"
+              >
+                {link.label}
+              </button>
+            ))}
+            <button
+              onClick={() => scrollToSection('#contact')}
+              className="bg-gradient-to-r from-[#8B4513] to-[#A0522D] text-[#F5F1E8] px-6 py-2 rounded-full hover:from-[#CD853F] hover:to-[#DEB887] transition-all duration-300 font-semibold shadow-lg text-sm self-start"
+            >
+              Order Now
+            </button>
+          </nav>
         </div>
-        <div className="absolute bottom-32 right-16 opacity-10">
-          <div className="w-20 h-20 bg-[#A0522D]/25 rounded-full animate-pulse"></div>
+      </header>
+
+      {/* Hero Section with Video Background */}
+      <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden">
+        {/* Video Background */}
+        <video
+          ref={videoRef}
+          autoPlay
+          loop
+          muted
+          playsInline
+          onLoadedData={() => setVideoLoaded(true)}
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
+            videoLoaded ? 'opacity-60' : 'opacity-0'
+          }`}
+        >
+          <source src="/hero-video.mp4" type="video/mp4" />
+          <source
+            src="https://videos.pexels.com/video-files/4589098/4589098-hd_1920_1080_24fps.mp4"
+            type="video/mp4"
+          />
+        </video>
+
+        {/* Fallback gradient (also serves as overlay) */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0D0907]/90 via-[#1A0F0A]/80 to-[#0D0907]/95 z-10" />
+
+        {/* Floating decorative elements */}
+        <div className="absolute bottom-10 left-10 opacity-20 z-10">
+          <div className="w-16 h-16 bg-[#8B4513]/30 rounded-full animate-pulse" />
+        </div>
+        <div className="absolute top-20 right-20 opacity-15 z-10">
+          <div className="w-12 h-12 bg-[#CD853F]/40 rounded-full animate-bounce" />
+        </div>
+        <div className="absolute bottom-32 right-16 opacity-10 z-10">
+          <div className="w-20 h-20 bg-[#A0522D]/25 rounded-full animate-pulse" />
+        </div>
+
+        {/* Mute/Unmute Button */}
+        <button
+          onClick={toggleVideoMute}
+          className="absolute bottom-8 right-8 z-30 bg-[#0D0907]/60 backdrop-blur-sm border border-[#8B4513]/30 text-[#D2B48C] hover:text-[#CD853F] p-3 rounded-full transition-all duration-300 hover:scale-110"
+          aria-label={videoMuted ? 'Unmute video' : 'Mute video'}
+        >
+          {videoMuted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
+        </button>
+
+        {/* Hero Content */}
+        <div className="relative z-20 text-center max-w-4xl mx-auto px-4">
+          <div className="mb-8 animate-[fadeInDown_1s_ease-out]">
+            <ChefHat className="h-16 w-16 text-[#CD853F] mx-auto mb-4 drop-shadow-2xl" />
+            <h1 className="text-6xl md:text-8xl font-serif font-bold text-[#F5F1E8] mb-4 leading-tight drop-shadow-2xl">
+              Hill Brownie
+            </h1>
+            <p className="text-2xl md:text-3xl text-[#D2B48C] font-light italic mb-8 drop-shadow-lg">
+              Tradition Meets Temptation
+            </p>
+          </div>
+
+          <button
+            onClick={() => scrollToSection('#products')}
+            className="bg-gradient-to-r from-[#8B4513] to-[#A0522D] text-[#F5F1E8] px-12 py-4 text-xl font-semibold rounded-full hover:from-[#CD853F] hover:to-[#DEB887] transform hover:scale-105 transition-all duration-300 shadow-2xl animate-[fadeInUp_1s_ease-out_0.3s_both]"
+          >
+            Order Now
+          </button>
+
+          {/* Scroll Down Indicator */}
+          <div
+            className="absolute bottom-[-120px] left-1/2 -translate-x-1/2 cursor-pointer animate-bounce"
+            onClick={() => scrollToSection('#products')}
+          >
+            <ChevronDown className="h-8 w-8 text-[#D2B48C]" />
+          </div>
         </div>
       </section>
 
       {/* Product Showcase */}
       <section id="products" className="py-20 bg-[#1A0F0A]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-5xl font-serif font-bold text-[#F5F1E8] mb-4">Our Signature Collection</h2>
-            <p className="text-xl text-[#D2B48C] max-w-2xl mx-auto">
-              Handcrafted with the finest ingredients and generations of baking expertise
-            </p>
-          </div>
+          <ScrollReveal>
+            <div className="text-center mb-16">
+              <h2 className="text-5xl font-serif font-bold text-[#F5F1E8] mb-4">Our Signature Collection</h2>
+              <p className="text-xl text-[#D2B48C] max-w-2xl mx-auto">
+                Handcrafted with the finest ingredients and generations of baking expertise
+              </p>
+            </div>
+          </ScrollReveal>
 
           {products.map((category, categoryIndex) => (
             <div key={categoryIndex} className="mb-16">
-              <h3 className="text-3xl font-serif font-semibold text-[#CD853F] mb-8 text-center">
-                {category.category}
-              </h3>
+              <ScrollReveal>
+                <h3 className="text-3xl font-serif font-semibold text-[#CD853F] mb-8 text-center">
+                  {category.category}
+                </h3>
+              </ScrollReveal>
               <div className="grid md:grid-cols-2 gap-8">
                 {category.items.map((product, index) => (
-                  <div key={index} className="bg-[#0D0907] rounded-2xl overflow-hidden shadow-2xl hover:transform hover:scale-105 transition-all duration-300 border border-[#8B4513]/20">
-                    <div className="relative h-64 overflow-hidden">
-                      <img 
-                        src={product.image} 
-                        alt={product.name}
-                        className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#0D0907]/60 to-transparent"></div>
-                      <div className="absolute top-4 right-4 bg-gradient-to-r from-[#CD853F] to-[#DEB887] text-[#0D0907] px-3 py-1 rounded-full font-bold shadow-lg">
-                        {product.price}
+                  <ScrollReveal key={index} delay={index * 150}>
+                    <div className="bg-[#0D0907] rounded-2xl overflow-hidden shadow-2xl hover:transform hover:scale-105 transition-all duration-300 border border-[#8B4513]/20 h-full">
+                      <div className="relative h-64 overflow-hidden">
+                        <img
+                          src={product.image}
+                          alt={product.name}
+                          className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#0D0907]/60 to-transparent" />
+                        <div className="absolute top-4 right-4 bg-gradient-to-r from-[#CD853F] to-[#DEB887] text-[#0D0907] px-3 py-1 rounded-full font-bold shadow-lg">
+                          {product.price}
+                        </div>
+                      </div>
+                      <div className="p-6">
+                        <h4 className="text-2xl font-serif font-bold text-[#F5F1E8] mb-3">{product.name}</h4>
+                        <p className="text-[#D2B48C] mb-4 leading-relaxed">{product.description}</p>
+                        <button
+                          onClick={() => scrollToSection('#contact')}
+                          className="w-full bg-gradient-to-r from-[#8B4513] to-[#A0522D] text-[#F5F1E8] py-3 rounded-lg hover:from-[#CD853F] hover:to-[#DEB887] transition-all duration-300 font-semibold shadow-lg"
+                        >
+                          Add to Cart
+                        </button>
                       </div>
                     </div>
-                    <div className="p-6">
-                      <h4 className="text-2xl font-serif font-bold text-[#F5F1E8] mb-3">{product.name}</h4>
-                      <p className="text-[#D2B48C] mb-4 leading-relaxed">{product.description}</p>
-                      <button className="w-full bg-gradient-to-r from-[#8B4513] to-[#A0522D] text-[#F5F1E8] py-3 rounded-lg hover:from-[#CD853F] hover:to-[#DEB887] transition-all duration-300 font-semibold shadow-lg">
-                        Add to Cart
-                      </button>
-                    </div>
-                  </div>
+                  </ScrollReveal>
                 ))}
               </div>
             </div>
@@ -207,41 +344,35 @@ function App() {
       {/* From Our Oven Section */}
       <section className="py-20 bg-[#0D0907] relative overflow-hidden">
         <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-10 left-10 w-32 h-32 bg-[#8B4513] rounded-full"></div>
-          <div className="absolute bottom-20 right-20 w-24 h-24 bg-[#CD853F] rounded-full"></div>
-          <div className="absolute top-1/2 left-1/3 w-16 h-16 bg-[#A0522D] rounded-full"></div>
+          <div className="absolute top-10 left-10 w-32 h-32 bg-[#8B4513] rounded-full" />
+          <div className="absolute bottom-20 right-20 w-24 h-24 bg-[#CD853F] rounded-full" />
+          <div className="absolute top-1/2 left-1/3 w-16 h-16 bg-[#A0522D] rounded-full" />
         </div>
-        
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center mb-16">
-            <h2 className="text-5xl font-serif font-bold text-[#F5F1E8] mb-4">From Our Oven</h2>
-            <p className="text-xl text-[#D2B48C]">Traditional European baking at its finest</p>
-          </div>
+          <ScrollReveal>
+            <div className="text-center mb-16">
+              <h2 className="text-5xl font-serif font-bold text-[#F5F1E8] mb-4">From Our Oven</h2>
+              <p className="text-xl text-[#D2B48C]">Traditional European baking at its finest</p>
+            </div>
+          </ScrollReveal>
 
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center group">
-              <div className="bg-[#1A0F0A] p-8 rounded-2xl hover:bg-[#8B4513]/20 transition-all duration-300 border border-[#8B4513]/10">
-                <Clock className="h-12 w-12 text-[#CD853F] mx-auto mb-4 group-hover:scale-110 transition-transform duration-300" />
-                <h3 className="text-2xl font-serif font-bold text-[#F5F1E8] mb-3">Fresh Daily</h3>
-                <p className="text-[#D2B48C]">Baked fresh every morning using time-honored techniques</p>
-              </div>
-            </div>
-            
-            <div className="text-center group">
-              <div className="bg-[#1A0F0A] p-8 rounded-2xl hover:bg-[#8B4513]/20 transition-all duration-300 border border-[#8B4513]/10">
-                <Award className="h-12 w-12 text-[#CD853F] mx-auto mb-4 group-hover:scale-110 transition-transform duration-300" />
-                <h3 className="text-2xl font-serif font-bold text-[#F5F1E8] mb-3">Award Winning</h3>
-                <p className="text-[#D2B48C]">Recognized for excellence in baking amonst top bakers in Nilgiris</p>
-              </div>
-            </div>
-            
-            <div className="text-center group">
-              <div className="bg-[#1A0F0A] p-8 rounded-2xl hover:bg-[#8B4513]/20 transition-all duration-300 border border-[#8B4513]/10">
-                <ChefHat className="h-12 w-12 text-[#CD853F] mx-auto mb-4 group-hover:scale-110 transition-transform duration-300" />
-                <h3 className="text-2xl font-serif font-bold text-[#F5F1E8] mb-3">Master Bakers</h3>
-                <p className="text-[#D2B48C]">Crafted by skilled bakers with decades of hands on experience</p>
-              </div>
-            </div>
+            {[
+              { icon: Clock, title: 'Fresh Daily', desc: 'Baked fresh every morning using time-honored techniques' },
+              { icon: Award, title: 'Award Winning', desc: 'Recognized for excellence in baking amongst top bakers in Nilgiris' },
+              { icon: ChefHat, title: 'Master Bakers', desc: 'Crafted by skilled bakers with decades of hands on experience' },
+            ].map((item, index) => (
+              <ScrollReveal key={index} delay={index * 150}>
+                <div className="text-center group h-full">
+                  <div className="bg-[#1A0F0A] p-8 rounded-2xl hover:bg-[#8B4513]/20 transition-all duration-300 border border-[#8B4513]/10 h-full">
+                    <item.icon className="h-12 w-12 text-[#CD853F] mx-auto mb-4 group-hover:scale-110 transition-transform duration-300" />
+                    <h3 className="text-2xl font-serif font-bold text-[#F5F1E8] mb-3">{item.title}</h3>
+                    <p className="text-[#D2B48C]">{item.desc}</p>
+                  </div>
+                </div>
+              </ScrollReveal>
+            ))}
           </div>
         </div>
       </section>
@@ -250,154 +381,184 @@ function App() {
       <section id="about" className="py-20 bg-[#1A0F0A]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-5xl font-serif font-bold text-[#F5F1E8] mb-6">Our Legacy</h2>
-              <p className="text-lg text-[#D2B48C] leading-relaxed mb-6">
-                Founded in 2015 by Devanandh NT, an experienced baker from the plains of Coimbatore,
-                a cornerstone of artisan baking for over Four decades. What started as a small neighborhood bakery 
-                has grown into a beloved unit, yet we've never forgotten our roots.
-              </p>
-              <p className="text-lg text-[#D2B48C] leading-relaxed mb-8">
-                Every recipe is a testament to Dev's vision: combining traditional techniques with 
-                innovative flavors that surprise and delight. Our signature Varkeys and brownies aren't just snack and desserts—they're 
-                edible stories of passion, heritage, and the pursuit of perfection.
-              </p>
-              <div className="flex items-center space-x-4">
-                <div className="w-16 h-16 bg-gradient-to-br from-[#8B4513] to-[#CD853F] rounded-full flex items-center justify-center shadow-lg">
-                  <ChefHat className="h-8 w-8 text-[#F5F1E8]" />
-                </div>
-                <div>
-                  <p className="text-[#F5F1E8] font-semibold">Devanandh NT</p>
-                  <p className="text-[#D2B48C]">Founder & Master Baker</p>
-                </div>
-              </div>
-            </div>
-            <div className="relative">
-              <div className="bg-[#0D0907] p-8 rounded-2xl shadow-2xl border border-[#8B4513]/20">
-                <img 
-                  src="https://i.postimg.cc/59CjcFdc/Shop-Pic.jpg" 
-                  alt="Traditional baking"
-                  className="w-full h-80 object-cover rounded-xl"
-                />
-                <div className="absolute -bottom-4 -right-4 bg-gradient-to-br from-[#CD853F] to-[#DEB887] p-4 rounded-xl shadow-lg">
-                  <p className="text-[#0D0907] font-bold text-2xl">10+</p>
-                  <p className="text-[#0D0907] text-sm">Years of Excellence</p>
+            <ScrollReveal>
+              <div>
+                <h2 className="text-5xl font-serif font-bold text-[#F5F1E8] mb-6">Our Legacy</h2>
+                <p className="text-lg text-[#D2B48C] leading-relaxed mb-6">
+                  Founded in 2015 by Devanandh NT, an experienced baker from the plains of Coimbatore, a cornerstone of
+                  artisan baking for over Four decades. What started as a small neighborhood bakery has grown into a
+                  beloved unit, yet we've never forgotten our roots.
+                </p>
+                <p className="text-lg text-[#D2B48C] leading-relaxed mb-8">
+                  Every recipe is a testament to Dev's vision: combining traditional techniques with innovative flavors
+                  that surprise and delight. Our signature Varkeys and brownies aren't just snack and desserts—they're
+                  edible stories of passion, heritage, and the pursuit of perfection.
+                </p>
+                <div className="flex items-center space-x-4">
+                  <div className="w-16 h-16 bg-gradient-to-br from-[#8B4513] to-[#CD853F] rounded-full flex items-center justify-center shadow-lg">
+                    <ChefHat className="h-8 w-8 text-[#F5F1E8]" />
+                  </div>
+                  <div>
+                    <p className="text-[#F5F1E8] font-semibold">Devanandh NT</p>
+                    <p className="text-[#D2B48C]">Founder & Master Baker</p>
+                  </div>
                 </div>
               </div>
-            </div>
+            </ScrollReveal>
+
+            <ScrollReveal delay={200}>
+              <div className="relative">
+                <div className="bg-[#0D0907] p-8 rounded-2xl shadow-2xl border border-[#8B4513]/20">
+                  <img
+                    src="https://i.postimg.cc/59CjcFdc/Shop-Pic.jpg"
+                    alt="Traditional baking"
+                    className="w-full h-80 object-cover rounded-xl"
+                  />
+                </div>
+              </div>
+            </ScrollReveal>
+          </div>
+
+          {/* Animated Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-20">
+            <ScrollReveal>
+              <StatCounter value={10} suffix="+" label="Years of Excellence" />
+            </ScrollReveal>
+            <ScrollReveal delay={100}>
+              <StatCounter value={50} suffix="+" label="Baked Delights" />
+            </ScrollReveal>
+            <ScrollReveal delay={200}>
+              <StatCounter value={10000} suffix="+" label="Happy Customers" />
+            </ScrollReveal>
+            <ScrollReveal delay={300}>
+              <StatCounter value={5} suffix="★" label="Average Rating" />
+            </ScrollReveal>
           </div>
         </div>
       </section>
 
-{/* Testimonials */}
-<section className="py-20 bg-[#0D0907]">
-  <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div className="text-center mb-16">
-      <h2 className="text-5xl font-serif font-bold text-[#F5F1E8] mb-4">What Our Customers Say</h2>
-      <p className="text-xl text-[#D2B48C]">Taste the love in every bite</p>
-    </div>
+      {/* Gallery */}
+      <div id="gallery">
+        <Gallery />
+      </div>
 
-    <div className="relative">
-      <div className="bg-[#1A0F0A] p-8 rounded-2xl shadow-2xl text-center border border-[#8B4513]/20">
-        <div className="flex justify-center mb-4">
-          {[...Array(testimonials[currentTestimonial].rating)].map((_, i) => (
-            <Star key={i} className="h-6 w-6 text-[#CD853F] fill-current" />
-          ))}
+      {/* Testimonials */}
+      <section className="py-20 bg-[#0D0907]">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <ScrollReveal>
+            <div className="text-center mb-16">
+              <h2 className="text-5xl font-serif font-bold text-[#F5F1E8] mb-4">What Our Customers Say</h2>
+              <p className="text-xl text-[#D2B48C]">Taste the love in every bite</p>
+            </div>
+          </ScrollReveal>
+
+          <ScrollReveal>
+            <div className="relative">
+              <div className="bg-[#1A0F0A] p-8 rounded-2xl shadow-2xl text-center border border-[#8B4513]/20">
+                <div className="flex justify-center mb-4">
+                  {[...Array(testimonials[currentTestimonial].rating)].map((_, i) => (
+                    <Star key={i} className="h-6 w-6 text-[#CD853F] fill-current" />
+                  ))}
+                </div>
+                <p className="text-xl text-[#F5F1E8] mb-6 italic leading-relaxed">
+                  "{testimonials[currentTestimonial].text}"
+                </p>
+                <p className="text-[#CD853F] font-semibold text-lg">— {testimonials[currentTestimonial].name}</p>
+              </div>
+
+              <div className="flex justify-center mt-8 space-x-2">
+                {testimonials.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentTestimonial(index)}
+                    className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                      index === currentTestimonial ? 'bg-[#CD853F] scale-125' : 'bg-[#8B4513]/40'
+                    }`}
+                    aria-label={`Go to testimonial ${index + 1}`}
+                  />
+                ))}
+              </div>
+            </div>
+          </ScrollReveal>
         </div>
-        <p className="text-xl text-[#F5F1E8] mb-6 italic leading-relaxed">
-          "{testimonials[currentTestimonial].text}"
-        </p>
-        <p className="text-[#CD853F] font-semibold text-lg">
-          — {testimonials[currentTestimonial].name}
-        </p>
-      </div>
-
-      <div className="flex justify-center mt-8 space-x-2">
-        {testimonials.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => setCurrentTestimonial(index)}
-            className={`w-3 h-3 rounded-full transition-all duration-300 ${
-              index === currentTestimonial ? 'bg-[#CD853F]' : 'bg-[#8B4513]/40'
-            }`}
-          />
-        ))}
-      </div>
-    </div>
-  </div>
-</section>
+      </section>
 
       {/* Contact Section */}
       <section id="contact" className="py-20 bg-[#1A0F0A]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-5xl font-serif font-bold text-[#F5F1E8] mb-4">Contact Us</h2>
-            <p className="text-xl text-[#D2B48C]">We'd love to hear from you</p>
-          </div>
+          <ScrollReveal>
+            <div className="text-center mb-16">
+              <h2 className="text-5xl font-serif font-bold text-[#F5F1E8] mb-4">Contact Us</h2>
+              <p className="text-xl text-[#D2B48C]">We'd love to hear from you</p>
+            </div>
+          </ScrollReveal>
 
           <div className="grid lg:grid-cols-2 gap-12">
-            {/* Contact Form */}
-            <ContactForm onSubmit={handleContactSubmit} />
+            <ScrollReveal>
+              <ContactForm onSubmit={handleContactSubmit} />
+            </ScrollReveal>
 
-            {/* Contact Information & Map */}
-            <div className="space-y-8">
-              <div className="bg-[#0D0907] p-8 rounded-2xl shadow-2xl border border-[#8B4513]/20">
-                <h3 className="text-2xl font-serif font-bold text-[#F5F1E8] mb-6">Visit Our Bakery</h3>
-                <div className="space-y-4 mb-6">
-                  <div className="flex items-start space-x-3">
-                    <MapPin className="h-5 w-5 text-[#CD853F] mt-1 flex-shrink-0" />
-                    <span className="text-[#D2B48C]">Mettupalayam Road, Kotagiri, The Nilgiris, Tamil Nadu, India - 643217</span>
+            <ScrollReveal delay={200}>
+              <div className="space-y-8">
+                <div className="bg-[#0D0907] p-8 rounded-2xl shadow-2xl border border-[#8B4513]/20">
+                  <h3 className="text-2xl font-serif font-bold text-[#F5F1E8] mb-6">Visit Our Bakery</h3>
+                  <div className="space-y-4 mb-6">
+                    <div className="flex items-start space-x-3">
+                      <MapPin className="h-5 w-5 text-[#CD853F] mt-1 flex-shrink-0" />
+                      <span className="text-[#D2B48C]">
+                        Mettupalayam Road, Kotagiri, The Nilgiris, Tamil Nadu, India - 643217
+                      </span>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <Phone className="h-5 w-5 text-[#CD853F]" />
+                      <span className="text-[#D2B48C]">+91 7867020202; +91 7867030303</span>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <Mail className="h-5 w-5 text-[#CD853F]" />
+                      <span className="text-[#D2B48C]">hillbrowniie@gmail.com</span>
+                    </div>
                   </div>
-                  <div className="flex items-center space-x-3">
-                    <Phone className="h-5 w-5 text-[#CD853F]" />
-                    <span className="text-[#D2B48C]">+91 7867020202; +91 7867030303</span>
+
+                  <div className="text-[#D2B48C] mb-6">
+                    <p className="font-semibold text-[#CD853F] mb-2">Opening Hours:</p>
+                    <p>Daily: 9:30 AM - 9:00 PM</p>
+                    <p>Weekend: 9:00 AM - 9:00 PM</p>
                   </div>
-                  <div className="flex items-center space-x-3">
-                    <Mail className="h-5 w-5 text-[#CD853F]" />
-                    <span className="text-[#D2B48C]">hillbrowniie@gmail.com</span>
+
+                  <div className="flex space-x-4">
+                    <a
+                      href="https://www.instagram.com/hillbrownie/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="bg-gradient-to-r from-[#8B4513] to-[#CD853F] p-3 rounded-full hover:from-[#CD853F] hover:to-[#DEB887] transition-all duration-300 shadow-lg"
+                    >
+                      <Instagram className="h-5 w-5 text-[#F5F1E8]" />
+                    </a>
+                    <a
+                      href="#"
+                      className="bg-gradient-to-r from-[#8B4513] to-[#CD853F] p-3 rounded-full hover:from-[#CD853F] hover:to-[#DEB887] transition-all duration-300 shadow-lg"
+                    >
+                      <Facebook className="h-5 w-5 text-[#F5F1E8]" />
+                    </a>
                   </div>
                 </div>
-                
-                <div className="text-[#D2B48C] mb-6">
-                  <p className="font-semibold text-[#CD853F] mb-2">Opening Hours:</p>
-                  <p>Daily: 9:30 AM - 9:00 PM</p>
-                  <p>Weekend: 9:00 AM - 9:00 PM</p>
-                </div>
 
-                <div className="flex space-x-4">
-                  <a 
-                    href="https://www.instagram.com/hillbrownie/" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="bg-gradient-to-r from-[#8B4513] to-[#CD853F] p-3 rounded-full hover:from-[#CD853F] hover:to-[#DEB887] transition-all duration-300 shadow-lg"
-                  >
-                    <Instagram className="h-5 w-5 text-[#F5F1E8]" />
-                  </a>
-                  <a 
-                    href="#" 
-                    className="bg-gradient-to-r from-[#8B4513] to-[#CD853F] p-3 rounded-full hover:from-[#CD853F] hover:to-[#DEB887] transition-all duration-300 shadow-lg"
-                  >
-                    <Facebook className="h-5 w-5 text-[#F5F1E8]" />
-                  </a>
+                <div className="bg-[#0D0907] p-4 rounded-2xl shadow-2xl border border-[#8B4513]/20">
+                  <div className="aspect-video rounded-xl overflow-hidden">
+                    <iframe
+                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3914.7234567890123!2d76.8654321!3d11.4123456!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sMettupalayam%20Road%2C%20Kotagiri%2C%20Tamil%20Nadu%20643217!5e0!3m2!1sen!2sin!4v1234567890123!5m2!1sen!2sin"
+                      width="100%"
+                      height="100%"
+                      style={{ border: 0 }}
+                      allowFullScreen
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                      title="Hill Brownie Location"
+                    />
+                  </div>
                 </div>
               </div>
-
-              {/* Google Maps Embed */}
-              <div className="bg-[#0D0907] p-4 rounded-2xl shadow-2xl border border-[#8B4513]/20">
-                <div className="aspect-video rounded-xl overflow-hidden">
-                  <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3914.7234567890123!2d76.8654321!3d11.4123456!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sMettupalayam%20Road%2C%20Kotagiri%2C%20Tamil%20Nadu%20643217!5e0!3m2!1sen!2sin!4v1234567890123!5m2!1sen!2sin"
-                    width="100%"
-                    height="100%"
-                    style={{ border: 0 }}
-                    allowFullScreen
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                    title="Hill Brownie Location"
-                  ></iframe>
-                </div>
-              </div>
-            </div>
+            </ScrollReveal>
           </div>
         </div>
       </section>
@@ -407,19 +568,35 @@ function App() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center space-x-3 mb-4 md:mb-0">
-              <img 
-                src="https://i.postimg.cc/QtwcSL2R/Logo-Profile.jpg" 
-                alt="Hill Brownie Logo"
-                className="h-8 w-8"
-              />
+              <img src="/HB_Logo.png" alt="Hill Brownie Logo" className="h-8 w-8 rounded-full object-cover" />
               <span className="text-xl font-serif font-bold text-[#F5F1E8]">Hill Brownie</span>
             </div>
-            <p className="text-[#D2B48C] text-center">
-              Crafted with ❤️ and chocolate
-            </p>
+            <nav className="flex flex-wrap justify-center gap-6 mb-4 md:mb-0">
+              {navLinks.map((link) => (
+                <button
+                  key={link.href}
+                  onClick={() => scrollToSection(link.href)}
+                  className="text-[#D2B48C] hover:text-[#CD853F] transition-colors duration-300 text-sm"
+                >
+                  {link.label}
+                </button>
+              ))}
+            </nav>
+            <p className="text-[#D2B48C] text-center text-sm">Crafted with care and chocolate</p>
           </div>
         </div>
       </footer>
+
+      {/* Back to Top Button */}
+      <button
+        onClick={scrollToTop}
+        className={`fixed bottom-8 left-8 z-50 bg-gradient-to-r from-[#8B4513] to-[#CD853F] text-[#F5F1E8] p-3 rounded-full shadow-2xl transition-all duration-300 hover:scale-110 ${
+          showBackToTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none'
+        }`}
+        aria-label="Back to top"
+      >
+        <ArrowUp className="h-5 w-5" />
+      </button>
     </div>
   );
 }

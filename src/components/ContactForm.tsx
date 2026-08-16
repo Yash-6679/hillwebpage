@@ -23,7 +23,7 @@ export default function ContactForm({ onSubmit }: ContactFormProps) {
       await onSubmit(formData);
       setSubmitStatus('success');
       setFormData({ name: '', email: '', message: '' });
-    } catch (error) {
+    } catch {
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);
